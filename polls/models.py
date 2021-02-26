@@ -13,8 +13,9 @@ class Question(models.Model):
     pub_date = models.DateTimeField('date published')
 
     def was_published_recently(self):
+        now = timezone.now()
         # https://docs.djangoproject.com/ko/3.1/topics/i18n/timezones/ 참조하면 좋음
-        return self.pub_date >= timezone.now() - datetime.timedelta(days=1)
+        return now - datetime.timedelta(days=1) <= self.pub_date <= now
 
     def __str__(self):
         return self.question_text
