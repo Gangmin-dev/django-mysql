@@ -72,6 +72,14 @@ def vote(request, question_id):
         # args의 인자는 iterable하도록 만든다.
         return HttpResponseRedirect(reverse('polls:results', args=(question_id, )))
 
+def delete(request, question_id):
+    question = get_object_or_404(Question, pk = question_id)
+    c = question.choice_set.all()
+    for choice in c:
+        choice.delete()
+    question.delete()
+    return HttpResponseRedirect(reverse('polls:index'))
+
 def create(request):
     return render(request, 'polls/create.html', {})
 
