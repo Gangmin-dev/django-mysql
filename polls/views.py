@@ -71,3 +71,22 @@ def vote(request, question_id):
         # user hits the Back button.
         # args의 인자는 iterable하도록 만든다.
         return HttpResponseRedirect(reverse('polls:results', args=(question_id, )))
+
+def create(request):
+    return render(request, 'polls/create.html', {})
+
+def create_process(request):
+    try:
+        question_text = request.POST['question_text']
+        choice_text = request.POST['choice_text']
+        print(request.POST)
+    except (KeyError):
+        return render(request, 'polls/create.html', {
+            'error_message': "빈칸을 채워주세요."
+        })
+    else:
+        q = Question(question_text = question_text, pub_date = timezone.now())
+        q.save()
+        c = q.choice_set.create(choice_text = choice_text, votes = 0)
+        c.save()
+        return HttpResponseRedirect(reverse('polls:detail', args=(q.pk, )))
